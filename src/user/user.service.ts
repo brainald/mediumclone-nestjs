@@ -67,6 +67,20 @@ export class UserService {
     return this.userRepository.findOne({ where: { id } });
   }
 
+  async updateUser(
+    userId: number,
+    updateUserDto: Partial<UserEntity>,
+  ): Promise<UserEntity> {
+    const user = await this.findById(userId);
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    Object.assign(user, updateUserDto);
+    return await this.userRepository.save(user);
+  }
+
   generateJWT(user: UserEntity): string {
     return sign(
       {
