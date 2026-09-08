@@ -75,12 +75,25 @@ export class ArticleController {
     @User('id') currentUserId: number,
     @Param('slug') slug: string,
     @Body('article') article: UpdateArticleDto,
-  ) {
+  ): Promise<ArticleResponseInterface> {
     const updatedArticle = await this.articleService.updateArticle(
       slug,
       currentUserId,
       article,
     );
     return this.articleService.buildArticleResponse(updatedArticle);
+  }
+
+  @Post(':slug/favorite')
+  @UseGuards(AuthGuard)
+  async addArticleToFavorites(
+    @User('id') currentUserId: number,
+    @Param('slug') slug: string,
+  ): Promise<ArticleResponseInterface> {
+    const article = await this.articleService.addArticleToFavorites(
+      slug,
+      currentUserId,
+    );
+    return this.articleService.buildArticleResponse(article);
   }
 }
